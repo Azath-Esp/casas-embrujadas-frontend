@@ -29,8 +29,9 @@ export default function Login() {
 
     setEnviando(true);
     try {
-      await login(datos.correo, datos.contrasena);
-      navigate(ubicacion.state?.desde ?? '/', { replace: true });
+      const sesion = await login(datos.correo, datos.contrasena);
+      const inicio = ['ADMIN', 'VENDEDOR'].includes(sesion.rol) ? '/panel' : '/';
+      navigate(ubicacion.state?.desde ?? inicio, { replace: true });
     } catch (error) {
       setErrorGeneral(mensajeDeError(error));
       setEnviando(false);
