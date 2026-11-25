@@ -1,101 +1,72 @@
 import {
-  obtenerComunas, correoValido, validarRegistro, esFormularioValido, validarLogin, validarContacto,
+  contrasenaValida, correoValido, esFormularioValido, validarContacto,
+  validarLogin, validarPerfil, validarRegistro,
 } from './validaciones';
 
+const registroValido = {
+  run: '12.345.678-5', nombre: 'Camila', apellidos: 'Reyes Pinto',
+  correo: 'camila@casasembrujadas.cl', confirmarCorreo: 'camila@casasembrujadas.cl',
+  contrasena: 'Fantasma1', confirmarContrasena: 'Fantasma1', direccion: '', idRegion: '7', idComuna: '11',
+};
+
 describe('Validaciones de formularios', () => {
-  // un registro que tiene que pasar sin errores; en algunas pruebas se copia y se cambia un campo
-  const datosValidos = {
-    nombre: 'Dinko Ocampo',
-    correo: 'dinko@duoc.cl',
-    confirmarCorreo: 'dinko@duoc.cl',
-    contrasena: 'fantasma',
-    confirmarContrasena: 'fantasma',
-    region: 'nuble',
-    comuna: 'chillán',
-  };
-
-  // --- regiones y comunas ---
-
-  it('obtenerComunas devuelve las comunas de la región', () => {
-    expect(obtenerComunas('nuble')).toEqual(['Chillán', 'San Carlos', 'Bulnes']);
+  it('correoValido acepta cualquier dominio con formato correcto', () => {
+    expect(correoValido('admin@casasembrujadas.cl')).toBeTrue();
+    expect(correoValido('alguien@duoc.cl')).toBeTrue();
   });
 
-  it('obtenerComunas devuelve [] si no hay región', () => {
-    expect(obtenerComunas('')).toEqual([]);
+  it('correoValido rechaza formatos incorrectos y correos de más de 120 caracteres', () => {
+    expect(correoValido('sin-arroba.cl')).toBeFalse();
+    expect(correoValido('a@b')).toBeFalse();
+    expect(correoValido(`${'a'.repeat(115)}@duoc.cl`)).toBeFalse();
   });
 
-  // --- correo ---
-
-  it('correoValido acepta los dominios permitidos', () => {
-    expect(correoValido('a@duoc.cl')).toBeTrue();
-    expect(correoValido('a@profesor.duoc.cl')).toBeTrue();
-    expect(correoValido('a@gmail.com')).toBeTrue();
+  it('contrasenaValida exige entre 8 y 72 caracteres con letra y número', () => {
+    expect(contrasenaValida('Cliente123!')).toBeTrue();
+    expect(contrasenaValida('corta1')).toBeFalse();
+    expect(contrasenaValida('sinnumeros')).toBeFalse();
+    expect(contrasenaValida('12345678')).toBeFalse();
+    expect(contrasenaValida(`a1${'x'.repeat(71)}`)).toBeFalse();
   });
-
-  it('correoValido rechaza otros dominios', () => {
-    expect(correoValido('a@hotmail.com')).toBeFalse();
-  });
-
-  it('correoValido rechaza correos de más de 100 caracteres', () => {
-    // 95 + 10 = 105 caracteres, con dominio válido para que falle solo por el largo
-    expect(correoValido('a'.repeat(95) + '@gmail.com')).toBeFalse();
-  });
-
-  // --- registro ---
 
   it('validarRegistro no devuelve errores con datos válidos', () => {
-    expect(validarRegistro(datosValidos)).toEqual({});
+    expect(validarRegistro(registroValido)).toEqual({});
   });
 
-  it('validarRegistro marca todos los campos de un formulario vacío', () => {
-    // las confirmaciones van con 'x' para que tampoco coincidan con el original vacío
-    const vacio = {
-      nombre: ' ', correo: '', confirmarCorreo: 'x', contrasena: '',
-      confirmarContrasena: 'x', region: '', comuna: '',
-    };
-    expect(Object.keys(validarRegistro(vacio)).length).toBe(7);
+  it('validarRegistro marca los campos obligatorios de un formulario vacío', () => {
+    const vacio = Object.fromEntries(Object.keys(registroValido).map((campo) => [campo, '']));
+    expect(Object.keys(validarRegistro(vacio)).sort())
+      .toEqual(['apellidos', 'contrasena', 'correo', 'idComuna', 'idRegion', 'nombre', 'run']);
   });
 
-  it('validarRegistro rechaza contraseñas de más de 10 caracteres', () => {
-    const datos = { ...datosValidos, contrasena: '12345678901', confirmarContrasena: '12345678901' };
-    expect(validarRegistro(datos).contrasena).toBeDefined();
+  it('validarRegistro detecta el RUN inválido y las confirmaciones distintas', () => {
+    const errores = validarRegistro({ ...registroValido, run: '12.345.678-9', confirmarCorreo: 'otra@x.cl', confirmarContrasena: 'Otra1234' });
+    expect(Object.keys(errores).sort()).toEqual(['confirmarContrasena', 'confirmarCorreo', 'run']);
+  });
+
+  it('validarLogin solo exige correo válido y contraseña', () => {
+    expect(validarLogin({ correo: 'admin@casasembrujadas.cl', contrasena: 'x' })).toEqual({});
+    expect(Object.keys(validarLogin({ correo: 'malo', contrasena: '' })).sort()).toEqual(['contrasena', 'correo']);
+  });
+
+  it('validarPerfil exige nombre y apellidos', () => {
+    expect(validarPerfil({ nombre: 'Camila', apellidos: 'Reyes', direccion: '' })).toEqual({});
+    expect(Object.keys(validarPerfil({ nombre: ' ', apellidos: '', direccion: 'x'.repeat(151) })).sort())
+      .toEqual(['apellidos', 'direccion', 'nombre']);
+  });
+
+  it('validarContacto marca campos vacíos y acepta un mensaje válido', () => {
+    expect(Object.keys(validarContacto({ nombre: '', correo: '', mensaje: '' })).length).toBe(3);
+    expect(validarContacto({ nombre: 'Ana', correo: 'ana@duoc.cl', mensaje: 'Hola' })).toEqual({});
+  });
+
+  it('validarContacto rechaza nombre y mensaje demasiado largos', () => {
+    const errores = validarContacto({ nombre: 'x'.repeat(101), correo: 'ana@duoc.cl', mensaje: 'x'.repeat(501) });
+    expect(Object.keys(errores).sort()).toEqual(['mensaje', 'nombre']);
   });
 
   it('esFormularioValido es true sin errores y false con errores', () => {
     expect(esFormularioValido({})).toBeTrue();
-    expect(esFormularioValido({ nombre: 'error' })).toBeFalse();
-  });
-
-  // --- login ---
-
-  it('validarLogin acepta credenciales válidas', () => {
-    expect(validarLogin({ correo: 'a@gmail.com', contrasena: '1234' })).toEqual({});
-  });
-
-  it('validarLogin marca correo inválido y contraseña corta', () => {
-    const errores = validarLogin({ correo: 'a@yahoo.com', contrasena: 'abc' });
-    expect(errores.correo).toBeDefined();
-    expect(errores.contrasena).toBeDefined();
-  });
-
-  it('validarLogin rechaza contraseña de más de 10 caracteres', () => {
-    expect(validarLogin({ correo: 'a@gmail.com', contrasena: '12345678901' }).contrasena).toBeDefined();
-  });
-
-  // --- contacto ---
-
-  it('validarContacto acepta un mensaje válido', () => {
-    expect(validarContacto({ nombre: 'Ana', correo: 'ana@duoc.cl', mensaje: 'Hola' })).toEqual({});
-  });
-
-  it('validarContacto marca campos vacíos', () => {
-    const errores = validarContacto({ nombre: ' ', correo: '', mensaje: ' ' });
-    expect(Object.keys(errores).length).toBe(3);
-  });
-
-  it('validarContacto rechaza nombre y mensaje demasiado largos', () => {
-    const errores = validarContacto({ nombre: 'a'.repeat(101), correo: 'ana@duoc.cl', mensaje: 'b'.repeat(501) });
-    expect(errores.nombre).toBeDefined();
-    expect(errores.mensaje).toBeDefined();
+    expect(esFormularioValido({ correo: 'malo' })).toBeFalse();
   });
 });
