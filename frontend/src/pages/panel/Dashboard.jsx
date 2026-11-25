@@ -5,11 +5,11 @@ import {
 import { mensajeDeError } from '../../services/api';
 import { dashboardService } from '../../services/dashboardService';
 import { formatearPrecio } from '../../utils/formato';
-import { COLOR_PRINCIPAL, COLORES_ESTADO, formatearMes, formatearMillones } from '../../utils/panel';
+import { COLOR_PRINCIPAL, COLORES_ESTADO, formatearMes, formatearMillones, TEMA } from '../../utils/panel';
 
 const NOMBRES_ESTADO = { DISPONIBLE: 'Disponible', RESERVADA: 'Reservada', VENDIDA: 'Vendida', INACTIVA: 'Inactiva' };
-const EJES = { stroke: '#b9aec8', fontSize: 12 };
-const TOOLTIP = { contentStyle: { background: '#1e1626', border: '1px solid #3a2647', color: '#eae6f0' }, itemStyle: { color: '#eae6f0' } };
+const EJES = { stroke: TEMA.textoSuave, fontSize: 12 };
+const TOOLTIP = { contentStyle: { background: TEMA.superficie, border: `1px solid ${TEMA.borde}`, color: TEMA.texto }, itemStyle: { color: TEMA.texto } };
 
 function Indicador({ titulo, valor, detalle }) {
   return (
@@ -55,10 +55,10 @@ export default function Dashboard() {
           <figcaption>Ingresos por mes, últimos 12 meses</figcaption>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={ventas} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-              <CartesianGrid stroke="#3a2647" vertical={false} />
-              <XAxis dataKey="mes" tick={EJES} stroke="#3a2647" />
-              <YAxis tickFormatter={formatearMillones} tick={EJES} stroke="#3a2647" width={90} />
-              <Tooltip {...TOOLTIP} cursor={{ fill: 'rgba(255,122,26,0.08)' }}
+              <CartesianGrid stroke={TEMA.borde} vertical={false} />
+              <XAxis dataKey="mes" tick={EJES} stroke={TEMA.borde} />
+              <YAxis tickFormatter={formatearMillones} tick={EJES} stroke={TEMA.borde} width={90} />
+              <Tooltip {...TOOLTIP} cursor={{ fill: 'rgba(79, 240, 160, 0.08)' }}
                 formatter={(valor, nombre, item) => [`${formatearPrecio(valor)} (${item.payload.ventas} ventas)`, 'Ingresos']} />
               <Bar dataKey="ingresos" name="Ingresos" fill={COLOR_PRINCIPAL} radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -70,7 +70,7 @@ export default function Dashboard() {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie data={estados} dataKey="cantidad" nameKey="etiqueta" innerRadius={55} outerRadius={95} paddingAngle={2}
-                label={({ cantidad }) => cantidad} stroke="#14101a">
+                label={({ cantidad }) => cantidad} stroke="#0f0a16">
                 {estados.map((e) => <Cell key={e.etiqueta} fill={COLORES_ESTADO[e.etiqueta]} />)}
               </Pie>
               <Tooltip {...TOOLTIP} formatter={(valor, nombre) => [valor, NOMBRES_ESTADO[nombre] ?? nombre]} />
@@ -84,11 +84,11 @@ export default function Dashboard() {
           {datos.categoriasMasVendidas.length === 0 ? <p className="text-secondary">Sin ventas todavía.</p> : (
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={datos.categoriasMasVendidas} layout="vertical" margin={{ left: 10, right: 20 }}>
-                <CartesianGrid stroke="#3a2647" horizontal={false} />
-                <XAxis type="number" allowDecimals={false} tick={EJES} stroke="#3a2647" />
-                <YAxis type="category" dataKey="etiqueta" width={140} tick={EJES} stroke="#3a2647" />
-                <Tooltip {...TOOLTIP} cursor={{ fill: 'rgba(255,122,26,0.08)' }} formatter={(valor) => [valor, 'Casas vendidas']} />
-                <Bar dataKey="cantidad" fill="#9b6bd3" radius={[0, 4, 4, 0]} />
+                <CartesianGrid stroke={TEMA.borde} horizontal={false} />
+                <XAxis type="number" allowDecimals={false} tick={EJES} stroke={TEMA.borde} />
+                <YAxis type="category" dataKey="etiqueta" width={140} tick={EJES} stroke={TEMA.borde} />
+                <Tooltip {...TOOLTIP} cursor={{ fill: 'rgba(79, 240, 160, 0.08)' }} formatter={(valor) => [valor, 'Casas vendidas']} />
+                <Bar dataKey="cantidad" fill={TEMA.violeta} radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}

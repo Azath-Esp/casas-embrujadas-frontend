@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Navbar from './Navbar';
 import { AuthProvider } from '../context/AuthContext';
 import { CarritoProvider } from '../context/CarritoContext';
+import { PreferenciasProvider } from '../context/PreferenciasContext';
 import { renderizar, sesionDePrueba, simularAlmacenamiento } from '../test-utils/renderizar';
 
 describe('Componente Navbar', () => {
@@ -11,9 +12,11 @@ describe('Componente Navbar', () => {
 
   const montar = () => renderizar(
     <MemoryRouter>
-      <AuthProvider>
-        <CarritoProvider><Navbar /></CarritoProvider>
-      </AuthProvider>
+      <PreferenciasProvider>
+        <AuthProvider>
+          <CarritoProvider><Navbar /></CarritoProvider>
+        </AuthProvider>
+      </PreferenciasProvider>
     </MemoryRouter>
   );
 

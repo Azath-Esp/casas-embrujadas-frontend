@@ -14,14 +14,23 @@ export function opcionesMenu(rol) {
   return MENU.filter((opcion) => opcion.roles.includes(rol));
 }
 
-export const COLORES_ESTADO = {
-  DISPONIBLE: '#3fbf6a',
-  RESERVADA: '#ffb02e',
-  VENDIDA: '#8a7a9c',
-  INACTIVA: '#4a3d57',
+export const TEMA = {
+  texto: '#ede7f6',
+  textoSuave: '#b9a8d0',
+  borde: '#3d2a55',
+  superficie: '#231732',
+  acento: '#4ff0a0',
+  violeta: '#b388ff',
 };
 
-export const COLOR_PRINCIPAL = '#ff7a1a';
+export const COLORES_ESTADO = {
+  DISPONIBLE: TEMA.acento,
+  RESERVADA: '#ffc46b',
+  VENDIDA: '#8d7ba6',
+  INACTIVA: '#5a4278',
+};
+
+export const COLOR_PRINCIPAL = TEMA.acento;
 
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
