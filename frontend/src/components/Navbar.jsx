@@ -12,7 +12,7 @@ const enlaces = [
 ];
 
 export default function Navbar() {
-  const { cantidad } = useCarrito();
+  const { cantidad, vaciar } = useCarrito();
   const { usuario, estaAutenticado, tieneRol, logout } = useAuth();
   const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -42,6 +42,7 @@ export default function Navbar() {
 
   function cerrarSesion() {
     cerrarMenu();
+    vaciar();
     logout();
     navigate('/');
   }
