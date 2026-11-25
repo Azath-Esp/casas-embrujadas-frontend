@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import CampoFormulario from '../components/CampoFormulario';
+import MenuCuenta from '../components/MenuCuenta';
 import { erroresPorCampo, mensajeDeError } from '../services/api';
 import { usuarioService } from '../services/usuarioService';
 import { formatearRun } from '../utils/run';
@@ -72,6 +73,7 @@ export default function MiCuenta() {
   return (
     <div className="container py-5">
       <h1 className="mb-4">Mi cuenta</h1>
+      <MenuCuenta />
       {aviso && <div className="alert alert-success" role="status">{aviso}</div>}
 
       <div className="row g-4">
