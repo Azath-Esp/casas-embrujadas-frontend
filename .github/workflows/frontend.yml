@@ -1,0 +1,38 @@
+name: Pruebas del frontend
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: Lint, pruebas y build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Revisar el código con ESLint
+        run: npm run lint
+
+      - name: Ejecutar pruebas con Karma
+        run: npm test
+
+      - name: Compilar la versión de producción
+        run: npm run build

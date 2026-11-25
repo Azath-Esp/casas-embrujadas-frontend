@@ -62,7 +62,10 @@ module.exports = function (config) {
     },
 
     // headless = sin abrir ventana; singleRun = corre una vez y termina
-    browsers: ['ChromeHeadless'],
+    customLaunchers: {
+      ChromeHeadlessCI: { base: 'ChromeHeadless', flags: ['--no-sandbox'] },
+    },
+    browsers: [process.env.CI ? 'ChromeHeadlessCI' : 'ChromeHeadless'],
     singleRun: true,
   });
 };
