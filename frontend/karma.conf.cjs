@@ -56,6 +56,9 @@ module.exports = function (config) {
     coverageReporter: {
       dir: 'coverage/', // ahí queda el index.html del reporte (está en .gitignore)
       reporters: [{ type: 'html' }, { type: 'text-summary' }],
+      check: {
+        global: { statements: 65, branches: 60, functions: 55, lines: 65 },
+      },
     },
 
     // headless = sin abrir ventana; singleRun = corre una vez y termina
