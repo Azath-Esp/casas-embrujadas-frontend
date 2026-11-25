@@ -1,5 +1,6 @@
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
+import api from '../services/api';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -38,6 +39,16 @@ export async function esperar() {
   }
 }
 
+export async function esperarHasta(condicion, limite = 4000) {
+  const inicio = Date.now();
+  while (!condicion()) {
+    if (Date.now() - inicio > limite) throw new Error('La condición no se cumplió a tiempo');
+    await act(async () => {
+      await new Promise((resolver) => setTimeout(resolver, 20));
+    });
+  }
+}
+
 export function crearToken(datos) {
   const json = JSON.stringify(datos);
   const bytes = new TextEncoder().encode(json);
@@ -60,4 +71,14 @@ export function simularAlmacenamiento(valores = {}) {
   spyOn(Storage.prototype, 'getItem').and.callFake((clave) => (clave in valores ? valores[clave] : null));
   spyOn(Storage.prototype, 'setItem');
   spyOn(Storage.prototype, 'removeItem');
+}
+
+export function simularApi(respuestas) {
+  const responder = (metodo) => (url) => {
+    const patron = Object.keys(respuestas).find((clave) => new RegExp(clave).test(`${metodo} ${url}`));
+    if (!patron) return Promise.reject(new Error(`Sin respuesta simulada para ${metodo} ${url}`));
+    const valor = respuestas[patron];
+    return Promise.resolve({ data: typeof valor === 'function' ? valor(url) : valor, headers: {} });
+  };
+  ['get', 'post', 'put', 'delete'].forEach((metodo) => spyOn(api, metodo).and.callFake(responder(metodo.toUpperCase())));
 }
