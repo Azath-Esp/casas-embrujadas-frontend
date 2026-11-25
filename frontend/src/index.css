@@ -624,3 +624,203 @@ h1, .h1 {
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+/* ==== Tienda conectada ==== */
+
+.tarjeta-propiedad.seleccionada {
+  border-color: #ff7a1a;
+}
+
+.tarjeta-propiedad__marco {
+  position: relative;
+}
+
+.tarjeta-propiedad__etiquetas {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  right: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.tarjeta-propiedad__etiquetas > * {
+  pointer-events: auto;
+}
+
+.tarjeta-propiedad--cargando {
+  min-height: 360px;
+}
+
+.tarjeta-propiedad--cargando .placeholder {
+  height: 220px;
+}
+
+.precio-tarjeta small,
+.precio-destacado small {
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+.estado-casa,
+.estado-boleta {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.estado-casa--disponible,
+.estado-boleta--pagada {
+  background: #16331f;
+  color: #8fe0a6;
+  border-color: #2f6b43;
+}
+
+.estado-casa--reservada {
+  background: #3a2a0c;
+  color: #ffc46b;
+  border-color: #7a5a1c;
+}
+
+.estado-casa--vendida,
+.estado-casa--inactiva,
+.estado-boleta--anulada {
+  background: #2a2430;
+  color: #b9aec8;
+  border-color: #4a3d57;
+}
+
+.nivel-embrujo span {
+  opacity: 0.2;
+  filter: grayscale(1);
+}
+
+.nivel-embrujo span.activo {
+  opacity: 1;
+  filter: none;
+}
+
+.boton-favorito {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid #4a3d57;
+  background: rgba(20, 16, 26, 0.85);
+  color: #eae6f0;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.boton-favorito.activo {
+  color: #ff5c7a;
+  border-color: #ff5c7a;
+}
+
+.boton-favorito:focus-visible {
+  outline: 2px solid #ff7a1a;
+  outline-offset: 2px;
+}
+
+.filtros {
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: #1b1422;
+}
+
+.barra-comparar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #24122e;
+  border-top: 1px solid #ff7a1a;
+}
+
+.tabla-comparar img {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.tabla-comparar td.mejor {
+  color: #ffc46b;
+  font-weight: bold;
+}
+
+.credito-foto {
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+.mito {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.reserva-activa {
+  padding: 1rem;
+  border: 1px solid #7a5a1c;
+  border-radius: 0.5rem;
+  background: #2a1f0e;
+}
+
+.cuenta-regresiva {
+  display: block;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 1.75rem;
+  color: #ffc46b;
+}
+
+.item-carrito.no-disponible {
+  opacity: 0.6;
+}
+
+.boleta {
+  background: #1b1422;
+}
+
+.menu-cuenta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--bs-border-color);
+  padding-bottom: 0.75rem;
+}
+
+.menu-cuenta__enlace {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  color: var(--bs-body-color);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.menu-cuenta__enlace.active {
+  border-color: #ff7a1a;
+  color: #ff7a1a;
+}
+
+@media (max-width: 575.98px) {
+  .ficha {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .ficha dd {
+    margin-bottom: 0.5rem;
+  }
+}
