@@ -1,4 +1,4 @@
-import js from '@eslint/js'
+﻿import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
@@ -6,7 +6,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 // Config que trae la plantilla de Vite (npm run lint).
 // Le agregamos los globales de Jasmine para las pruebas, porque si no
-// ESLint reclamaba que describe, it y expect "no están definidos"
+// ESLint reclamaba que describe, it y expect "no estÃ¡n definidos"
 export default defineConfig([
   globalIgnores(['dist', 'coverage']),
   {
@@ -22,7 +22,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.spec.{js,jsx}'],
+    files: ['**/*.spec.{js,jsx}', 'src/test-utils/**/*.js'],
     languageOptions: {
       globals: { ...globals.browser, ...globals.jasmine },
     },
