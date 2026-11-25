@@ -22,6 +22,7 @@ export default function Navbar() {
 
   const puedeComprar = !estaAutenticado || tieneRol('CLIENTE');
   const tieneCuenta = tieneRol('CLIENTE', 'ADMIN');
+  const tienePanel = tieneRol('ADMIN', 'VENDEDOR');
 
   useEffect(() => {
     if (!menuAbierto) return undefined;
@@ -74,6 +75,9 @@ export default function Navbar() {
             {estaAutenticado ? (
               <>
                 <span className="navbar-text small me-1">Hola, {usuario.nombre}</span>
+                {tienePanel && (
+                  <Link className="btn btn-outline-warning btn-sm" to="/panel" onClick={cerrarMenu}>Panel</Link>
+                )}
                 {tieneCuenta && (
                   <Link className="btn btn-outline-light btn-sm" to="/mi-cuenta" onClick={cerrarMenu}>Mi cuenta</Link>
                 )}
