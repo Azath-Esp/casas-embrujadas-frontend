@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
+import Linterna from './components/Linterna';
 import Navbar from './components/Navbar';
 import RutaProtegida from './components/RutaProtegida';
 import ScrollAlInicio from './components/ScrollAlInicio';
@@ -85,6 +86,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <Linterna />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCarrito } from '../context/CarritoContext';
+import BotonesAmbiente from './BotonesAmbiente';
 
 const enlaces = [
   { ruta: '/', texto: 'Home' },
@@ -50,9 +51,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav ref={navRef} className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav ref={navRef} className="navbar navbar-expand-xl navbar-dark bg-dark">
       <div className="container-fluid px-3 px-lg-5">
         <Link className="navbar-brand" to="/" onClick={cerrarMenu}>👻 Casas Embrujadas</Link>
+
+        <div className="order-xl-last ms-auto ms-xl-3 me-2 me-xl-0">
+          <BotonesAmbiente />
+        </div>
 
         <button
           className="navbar-toggler" type="button"
@@ -71,7 +76,7 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <div className="d-flex flex-wrap align-items-center gap-2 pb-2 pb-lg-0">
+          <div className="d-flex flex-wrap flex-xl-nowrap align-items-center gap-2 pb-2 pb-xl-0">
             {estaAutenticado ? (
               <>
                 <span className="navbar-text small me-1">Hola, {usuario.nombre}</span>

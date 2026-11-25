@@ -11,16 +11,19 @@ import './index.css';
 
 import { AuthProvider } from './context/AuthContext';
 import { CarritoProvider } from './context/CarritoContext';
+import { PreferenciasProvider } from './context/PreferenciasContext';
 import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <CarritoProvider>
-          <App />
-        </CarritoProvider>
-      </AuthProvider>
+      <PreferenciasProvider>
+        <AuthProvider>
+          <CarritoProvider>
+            <App />
+          </CarritoProvider>
+        </AuthProvider>
+      </PreferenciasProvider>
     </BrowserRouter>
   </StrictMode>,
 );
