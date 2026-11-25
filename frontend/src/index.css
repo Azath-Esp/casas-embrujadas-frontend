@@ -528,3 +528,99 @@ h1, .h1 {
     transition: none;
   }
 }
+
+/* ==== Páginas de error y Mi cuenta ==== */
+
+.pagina-error {
+  max-width: 640px;
+}
+
+.pagina-error__ilustracion {
+  width: min(220px, 60vw);
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.pagina-error__codigo {
+  font-family: var(--fuente-titulos);
+  font-size: clamp(3rem, 12vw, 5rem);
+  line-height: 1;
+  color: #ff7a1a;
+  margin-bottom: 0.5rem;
+}
+
+.ilustracion__puerta,
+.ilustracion__muro {
+  fill: #24122e;
+  stroke: #8a7a9c;
+  stroke-width: 2;
+}
+
+.ilustracion__panel {
+  fill: none;
+  stroke: #3a2647;
+  stroke-width: 2;
+}
+
+.ilustracion__vano {
+  fill: #0b0810;
+  stroke: #3a2647;
+  stroke-width: 2;
+}
+
+.ilustracion__perilla,
+.ilustracion__candado {
+  fill: #ff7a1a;
+}
+
+.ilustracion__arco,
+.ilustracion__cadena,
+.ilustracion__mecha {
+  fill: none;
+  stroke: #b9aec8;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ilustracion__fantasma {
+  fill: #eae6f0;
+  opacity: 0.85;
+}
+
+.ilustracion__ojo {
+  fill: #14101a;
+}
+
+.ilustracion__vela {
+  fill: #eae6f0;
+}
+
+.ilustracion__llama {
+  fill: #ff9a4d;
+}
+
+.ilustracion__signo {
+  fill: #b9aec8;
+  font-family: var(--fuente-titulos);
+  font-size: 34px;
+}
+
+.ficha {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: #1b1422;
+}
+
+.ficha dt {
+  color: var(--bs-secondary-color);
+  font-weight: normal;
+}
+
+.ficha dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
