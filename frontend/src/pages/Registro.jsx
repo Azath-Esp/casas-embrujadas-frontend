@@ -1,41 +1,56 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CampoFormulario from '../components/CampoFormulario';
-import { obtenerComunas, validarRegistro, esFormularioValido } from '../utils/validaciones';
+import SelectorComuna from '../components/SelectorComuna';
+import { useAuth } from '../context/AuthContext';
+import { erroresPorCampo, mensajeDeError } from '../services/api';
+import { esFormularioValido, validarRegistro } from '../utils/validaciones';
 
 const datosIniciales = {
-  nombre: '', correo: '', confirmarCorreo: '',
-  contrasena: '', confirmarContrasena: '', region: '', comuna: '',
+  run: '', nombre: '', apellidos: '', correo: '', confirmarCorreo: '',
+  contrasena: '', confirmarContrasena: '', direccion: '', idRegion: '', idComuna: '',
 };
 
-// Formulario controlado: lo que se ve en cada input sale del estado "datos",
-// y cada tecla que se escribe actualiza ese estado
 export default function Registro() {
+  const { registro } = useAuth();
+  const navigate = useNavigate();
   const [datos, setDatos] = useState(datosIniciales);
   const [errores, setErrores] = useState({});
-  const [exito, setExito] = useState(false);
+  const [errorGeneral, setErrorGeneral] = useState('');
+  const [enviando, setEnviando] = useState(false);
 
-  // Un solo handleChange para todos los campos: usa el "name" del input para saber
-  // qué propiedad cambiar. Si se cambia la región, la comuna vuelve a quedar vacía
-  // (si no, podría quedar elegida una comuna de otra región)
   function handleChange(e) {
     const { name, value } = e.target;
-    setDatos((prev) => ({
-      ...prev,
+    setDatos((previos) => ({
+      ...previos,
       [name]: value,
-      ...(name === 'region' ? { comuna: '' } : {}),
+      ...(name === 'idRegion' ? { idComuna: '' } : {}),
     }));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault(); // que no recargue la página
+  async function handleSubmit(e) {
+    e.preventDefault();
     const nuevosErrores = validarRegistro(datos);
     setErrores(nuevosErrores);
+    setErrorGeneral('');
+    if (!esFormularioValido(nuevosErrores)) return;
 
-    if (esFormularioValido(nuevosErrores)) {
-      setExito(true);
-      setDatos(datosIniciales); // limpiamos el formulario
-    } else {
-      setExito(false);
+    setEnviando(true);
+    try {
+      await registro({
+        run: datos.run,
+        nombre: datos.nombre.trim(),
+        apellidos: datos.apellidos.trim(),
+        correo: datos.correo.trim(),
+        contrasena: datos.contrasena,
+        direccion: datos.direccion.trim() || null,
+        idComuna: Number(datos.idComuna),
+      });
+      navigate('/mi-cuenta', { replace: true, state: { mensaje: '¡Cuenta creada! Bienvenido al más allá.' } });
+    } catch (error) {
+      setErrores(erroresPorCampo(error));
+      setErrorGeneral(mensajeDeError(error));
+      setEnviando(false);
     }
   }
 
@@ -46,58 +61,40 @@ export default function Registro() {
           <div className="card shadow-sm p-4">
             <h1 className="h3 mb-4 text-center">Crear cuenta 👻</h1>
 
-            {exito && <div className="alert alert-success">¡Registro exitoso! Bienvenido al más allá.</div>}
+            {errorGeneral && <div className="alert alert-danger" role="alert">{errorGeneral}</div>}
 
-            {/* noValidate apaga los avisos propios del navegador, así se ven solo nuestros mensajes */}
             <form onSubmit={handleSubmit} noValidate>
-              <CampoFormulario etiqueta="Nombre completo" nombre="nombre"
-                valor={datos.nombre} onChange={handleChange} error={errores.nombre} />
+              <CampoFormulario etiqueta="RUN" nombre="run"
+                valor={datos.run} onChange={handleChange} error={errores.run} />
 
-              <CampoFormulario etiqueta="Correo" nombre="correo" tipo="email"
-                valor={datos.correo} onChange={handleChange} error={errores.correo} />
-
-              <CampoFormulario etiqueta="Confirmar correo" nombre="confirmarCorreo" tipo="email"
-                valor={datos.confirmarCorreo} onChange={handleChange} error={errores.confirmarCorreo} />
-
-              <CampoFormulario etiqueta="Contraseña" nombre="contrasena" tipo="password"
-                valor={datos.contrasena} onChange={handleChange} error={errores.contrasena} />
-
-              <CampoFormulario etiqueta="Confirmar contraseña" nombre="confirmarContrasena" tipo="password"
-                valor={datos.confirmarContrasena} onChange={handleChange} error={errores.confirmarContrasena} />
-
-              {/* región y comuna lado a lado desde tablet; los select no usan CampoFormulario porque llevan <option> */}
               <div className="row">
-                <div className="col-12 col-sm-6 mb-3">
-                  <label htmlFor="region" className="form-label">Región</label>
-                  <select id="region" name="region" value={datos.region} onChange={handleChange}
-                    className={`form-select ${errores.region ? 'is-invalid' : ''}`}>
-                    <option value="">Seleccionar</option>
-                    <option value="metropolitana">Metropolitana</option>
-                    <option value="araucania">Araucanía</option>
-                    <option value="nuble">Ñuble</option>
-                  </select>
-                  {errores.region && <div className="invalid-feedback">{errores.region}</div>}
+                <div className="col-12 col-sm-6">
+                  <CampoFormulario etiqueta="Nombre" nombre="nombre"
+                    valor={datos.nombre} onChange={handleChange} error={errores.nombre} />
                 </div>
-
-                <div className="col-12 col-sm-6 mb-3">
-                  <label htmlFor="comuna" className="form-label">Comuna</label>
-                  {/* queda bloqueado hasta elegir región y solo muestra las comunas de esa región.
-                      En la EP1 esto se hacía armando las <option> con innerHTML */}
-                  <select id="comuna" name="comuna" value={datos.comuna} onChange={handleChange}
-                    disabled={!datos.region}
-                    className={`form-select ${errores.comuna ? 'is-invalid' : ''}`}>
-                    <option value="">
-                      {datos.region ? 'Seleccione' : 'Elija una región'}
-                    </option>
-                    {obtenerComunas(datos.region).map((c) => (
-                      <option key={c} value={c.toLowerCase()}>{c}</option>
-                    ))}
-                  </select>
-                  {errores.comuna && <div className="invalid-feedback">{errores.comuna}</div>}
+                <div className="col-12 col-sm-6">
+                  <CampoFormulario etiqueta="Apellidos" nombre="apellidos"
+                    valor={datos.apellidos} onChange={handleChange} error={errores.apellidos} />
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-warning w-100 mt-3">Registrarse</button>
+              <CampoFormulario etiqueta="Correo" nombre="correo" tipo="email"
+                valor={datos.correo} onChange={handleChange} error={errores.correo} />
+              <CampoFormulario etiqueta="Confirmar correo" nombre="confirmarCorreo" tipo="email"
+                valor={datos.confirmarCorreo} onChange={handleChange} error={errores.confirmarCorreo} />
+              <CampoFormulario etiqueta="Contraseña" nombre="contrasena" tipo="password"
+                valor={datos.contrasena} onChange={handleChange} error={errores.contrasena} />
+              <CampoFormulario etiqueta="Confirmar contraseña" nombre="confirmarContrasena" tipo="password"
+                valor={datos.confirmarContrasena} onChange={handleChange} error={errores.confirmarContrasena} />
+              <CampoFormulario etiqueta="Dirección (opcional)" nombre="direccion"
+                valor={datos.direccion} onChange={handleChange} error={errores.direccion} />
+
+              <SelectorComuna idRegion={datos.idRegion} idComuna={datos.idComuna}
+                onChange={handleChange} errores={errores} />
+
+              <button type="submit" className="btn btn-warning w-100 mt-3" disabled={enviando}>
+                {enviando ? 'Creando cuenta…' : 'Registrarse'}
+              </button>
             </form>
           </div>
         </div>
