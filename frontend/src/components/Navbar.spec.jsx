@@ -18,7 +18,7 @@ describe('Componente Navbar', () => {
   );
 
   it('a un visitante le muestra login, registro y el carrito con su cantidad', () => {
-    simularAlmacenamiento({ carrito: '["a","b","c"]' });
+    simularAlmacenamiento({ carrito: '[1,6,9]' });
     vista = montar();
     const texto = vista.contenedor.textContent;
     expect(texto).toContain('Propiedades');
