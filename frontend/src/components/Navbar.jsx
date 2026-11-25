@@ -6,6 +6,7 @@ import { useCarrito } from '../context/CarritoContext';
 const enlaces = [
   { ruta: '/', texto: 'Home' },
   { ruta: '/productos', texto: 'Propiedades' },
+  { ruta: '/mapa', texto: 'Mapa' },
   { ruta: '/nosotros', texto: 'Nosotros' },
   { ruta: '/blogs', texto: 'Blogs' },
   { ruta: '/contacto', texto: 'Contacto' },

@@ -13,6 +13,7 @@ import Detalle from './pages/Detalle';
 import Favoritos from './pages/Favoritos';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Mapa from './pages/Mapa';
 import MiCuenta from './pages/MiCuenta';
 import MisCompras from './pages/MisCompras';
 import MisReservas from './pages/MisReservas';
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/productos" element={<Productos />} />
           <Route path="/producto/:id" element={<Detalle />} />
           <Route path="/comparar" element={<Comparar />} />
+          <Route path="/mapa" element={<Mapa />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/blogs" element={<Blogs />} />
