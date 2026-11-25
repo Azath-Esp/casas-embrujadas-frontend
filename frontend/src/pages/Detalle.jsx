@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import BotonFavorito from '../components/BotonFavorito';
 import CuentaRegresiva from '../components/CuentaRegresiva';
 import EstadoCasa from '../components/EstadoCasa';
+import MapaDiferido from '../components/MapaDiferido';
 import NivelEmbrujo from '../components/NivelEmbrujo';
 import { IMAGEN_RESPALDO } from '../components/TarjetaProducto';
 import { useAuth } from '../context/AuthContext';
@@ -13,6 +14,7 @@ import { productoService } from '../services/productoService';
 import { reservaService } from '../services/reservaService';
 import { sePuedeComprar } from '../utils/carrito';
 import { formatearFecha, formatearFechaHora, formatearPrecio } from '../utils/formato';
+import { conCoordenadas } from '../utils/mapa';
 
 function FichaCasa({ id }) {
   const { estaAutenticado, tieneRol } = useAuth();
@@ -59,6 +61,7 @@ function FichaCasa({ id }) {
   }, [esCliente, version]);
 
   const { casa } = datos;
+  const casasMapa = useMemo(() => (casa ? conCoordenadas([casa]) : []), [casa]);
   const reservasActivas = esCliente ? reservas.filter((r) => r.estado === 'ACTIVA') : [];
   const miReserva = casa ? reservasActivas.find((r) => r.idProducto === casa.idProducto) : null;
 
@@ -206,6 +209,12 @@ function FichaCasa({ id }) {
             <dt>Precio</dt>
             <dd className="precio-destacado">{formatearPrecio(casa.precio)} <small>+ IVA</small></dd>
           </dl>
+
+          {casasMapa.length > 0 && (
+            <div className="mb-3">
+              <MapaDiferido casas={casasMapa} alto="240px" conEnlace={false} />
+            </div>
+          )}
 
           {aviso && <div className={`alert alert-${aviso.tipo}`} role="status">{aviso.texto}</div>}
           {favoritos.error && <div className="alert alert-warning" role="alert">{favoritos.error}</div>}
