@@ -7,15 +7,21 @@ import AccesoDenegado from './pages/AccesoDenegado';
 import BlogDetalle from './pages/BlogDetalle';
 import Blogs from './pages/Blogs';
 import Carrito from './pages/Carrito';
+import Comparar from './pages/Comparar';
 import Contacto from './pages/Contacto';
 import Detalle from './pages/Detalle';
+import Favoritos from './pages/Favoritos';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import MiCuenta from './pages/MiCuenta';
+import MisCompras from './pages/MisCompras';
+import MisReservas from './pages/MisReservas';
 import NoEncontrada from './pages/NoEncontrada';
 import Nosotros from './pages/Nosotros';
 import Productos from './pages/Productos';
 import Registro from './pages/Registro';
+
+const SOLO_CLIENTE = ['CLIENTE'];
 
 export default function App() {
   return (
@@ -28,6 +34,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/productos" element={<Productos />} />
           <Route path="/producto/:id" element={<Detalle />} />
+          <Route path="/comparar" element={<Comparar />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/blogs" element={<Blogs />} />
@@ -39,6 +46,9 @@ export default function App() {
             path="/mi-cuenta"
             element={<RutaProtegida roles={['CLIENTE', 'ADMIN']}><MiCuenta /></RutaProtegida>}
           />
+          <Route path="/mis-compras" element={<RutaProtegida roles={SOLO_CLIENTE}><MisCompras /></RutaProtegida>} />
+          <Route path="/mis-reservas" element={<RutaProtegida roles={SOLO_CLIENTE}><MisReservas /></RutaProtegida>} />
+          <Route path="/favoritos" element={<RutaProtegida roles={SOLO_CLIENTE}><Favoritos /></RutaProtegida>} />
           <Route path="/403" element={<AccesoDenegado />} />
           <Route path="*" element={<NoEncontrada />} />
         </Routes>
