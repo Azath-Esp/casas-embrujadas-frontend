@@ -13,7 +13,8 @@ Proyecto de la asignatura DSY1104 Desarrollo Full Stack II, Duoc UC.
 | EP3 | Conexión con la API Spring Boot, roles, panel de administración y extras | carpeta `frontend/` |
 
 - Repositorio del backend: https://github.com/Azath-Esp/casas-embrujadas-api
-- Sitio publicado: se agrega en el capítulo 20 (Vercel)
+- Sitio publicado: https://casas-embrujadas-frontend.vercel.app
+- API publicada: https://casas-embrujadas-api.onrender.com
 
 ## Funcionalidades
 
