@@ -1,77 +1,98 @@
 /*
   Estilos propios de Casas Embrujadas, encima de Bootstrap.
   Casi todo se hace cambiando las variables CSS de Bootstrap (--bs-...) en vez de pelear con sus clases.
-  Colores base (los mismos de la EP1):
-    #14101a  fondo
-    #24122e  morado del navbar y footer
-    #1a1322 y #1e1626  cajas y tarjetas
-    #3a2647  bordes
-    #eae6f0  texto, #b9aec8 texto secundario
-    #ff7a1a  naranjo
+  Todos los colores y fuentes salen de las variables --ce-... del bloque :root de abajo:
+  para cambiar la paleta se cambia ahí y no en cada regla.
 */
 
-/* ==== Paleta y tipografía base ==== */
+/* ==== Paleta y fuentes del sitio ==== */
+
+:root {
+  --ce-fondo: #0f0a16;
+  --ce-fondo-rgb: 15 10 22;
+  --ce-morado: #2a1640;
+  --ce-morado-rgb: 42 22 64;
+  --ce-superficie: #1b1226;
+  --ce-superficie-2: #231732;
+  --ce-borde: #3d2a55;
+  --ce-borde-brillo: #5a4278;
+  --ce-texto: #ede7f6;
+  --ce-texto-suave: #b9a8d0;
+  --ce-texto-claro: #d4c8e6;
+  --ce-acento: #4ff0a0;
+  --ce-acento-rgb: 79 240 160;
+  --ce-acento-claro: #7dfcbc;
+  --ce-acento-oscuro: #2fc77f;
+  --ce-violeta: #b388ff;
+  --ce-violeta-rgb: 179 136 255;
+  --ce-gris: #8d7ba6;
+  --ce-favorito: #ff6fa3;
+  --ce-alerta: #ffc46b;
+  --ce-exito: #4ff0a0;
+  --ce-foco: #ffffff;
+  --alto-barra: 4.5rem;
+  --fuente-titulos: 'Cinzel Variable', Georgia, serif;
+  --fuente-texto: 'Crimson Pro Variable', Georgia, serif;
+}
+
+/* ==== Bootstrap con la paleta del sitio ==== */
 
 /* data-bs-theme="dark" está en index.html; acá cambiamos los colores que Bootstrap trae para ese modo */
 [data-bs-theme="dark"] {
-  --bs-body-bg: #14101a;
-  --bs-body-color: #eae6f0;
-  --bs-body-font-family: Georgia, 'Times New Roman', serif;
-  --bs-secondary-color: #b9aec8;
-  --bs-border-color: #3a2647;
-  --bs-link-color-rgb: 255, 122, 26;
-  --bs-link-hover-color-rgb: 255, 154, 77;
+  --bs-body-bg: var(--ce-fondo);
+  --bs-body-color: var(--ce-texto);
+  --bs-body-font-family: var(--fuente-texto);
+  --bs-secondary-color: var(--ce-texto-suave);
+  --bs-border-color: var(--ce-borde);
+  --bs-link-color-rgb: 79, 240, 160;
+  --bs-link-hover-color-rgb: 125, 252, 188;
 }
 
-/* fuente "de imprenta antigua" para títulos, botones y logo (se carga en index.html) */
-:root {
-  --fuente-titulos: 'IM Fell English', Georgia, serif;
-}
+/* Cinzel, letras de inscripción clásica, para títulos, botones y logo */
 h1, h2, h3, .h1, .h2, .h3, .h4, .h5, .display-6,
 .navbar-brand, .card-title {
   font-family: var(--fuente-titulos);
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
 
-/* los h1 en naranjo, como .titulo-seccion en la EP1 */
+/* color de respaldo de los h1; el degradado verde a violeta está en «Estilo», al final */
 h1, .h1 {
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 
-/* Georgia y IM Fell usan números "antiguos" (el 0 parece una o), se ven raros en precios.
-   Para los números usamos Palatino, que viene con Windows */
+/* Para las cifras de los precios usamos la fuente del texto, con números alineados y del mismo ancho */
 .precio-destacado,
 .precio-tarjeta,
 .item-carrito__subtotal,
 .contador__valor,
 .linea-tiempo__anio {
-  font-family: 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
-  font-variant-numeric: lining-nums;
+  font-family: var(--fuente-texto);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 /* ==== Navbar ==== */
 
 /* !important porque bg-dark de Bootstrap también lo usa */
 .bg-dark {
-  background-color: #24122e !important;
+  background-color: var(--ce-morado) !important;
 }
 .navbar {
-  border-bottom: 2px solid #ff7a1a;
+  border-bottom: 2px solid var(--ce-acento);
 }
 .navbar-brand {
-  color: #ff7a1a !important;
+  color: var(--ce-acento) !important;
   font-weight: bold;
 }
 .navbar .nav-link.active,
 .navbar .nav-link:hover {
-  color: #ff7a1a !important;
+  color: var(--ce-acento) !important;
 }
 
 /* Menú en celular. Como lo abre React (clase .show) y no el JS de Bootstrap,
    la animación la hacemos nosotros: crece de max-height 0 a 400px.
    visibility: hidden es para que no se pueda llegar a los enlaces con Tab estando cerrado */
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   .navbar-collapse.collapse {
     display: block;
     max-height: 0;
@@ -100,21 +121,21 @@ h1, .h1 {
 
 /* el botón principal: usamos btn-warning de Bootstrap pero en naranjo en vez de amarillo */
 .btn-warning {
-  --bs-btn-bg: #ff7a1a;
-  --bs-btn-border-color: #ff7a1a;
-  --bs-btn-color: #14101a;
-  --bs-btn-hover-bg: #ff9a4d;
-  --bs-btn-hover-border-color: #ff9a4d;
-  --bs-btn-hover-color: #14101a;
-  --bs-btn-active-bg: #e8650a;
-  --bs-btn-active-border-color: #e8650a;
+  --bs-btn-bg: var(--ce-acento);
+  --bs-btn-border-color: var(--ce-acento);
+  --bs-btn-color: var(--ce-fondo);
+  --bs-btn-hover-bg: var(--ce-acento-claro);
+  --bs-btn-hover-border-color: var(--ce-acento-claro);
+  --bs-btn-hover-color: var(--ce-fondo);
+  --bs-btn-active-bg: var(--ce-acento-oscuro);
+  --bs-btn-active-border-color: var(--ce-acento-oscuro);
 }
 .btn-warning:hover {
-  box-shadow: 0 0 18px rgba(255, 122, 26, 0.45);
+  box-shadow: 0 0 18px rgb(var(--ce-acento-rgb) / 0.45);
 }
 /* "marco" fino alrededor de los botones grandes (los chicos del navbar no lo llevan) */
 .btn-warning:not(.btn-sm) {
-  outline: 1px solid rgba(255, 122, 26, 0.55);
+  outline: 1px solid rgb(var(--ce-acento-rgb) / 0.55);
   outline-offset: 3px;
 }
 .btn-warning:not(.btn-sm):hover {
@@ -125,20 +146,20 @@ h1, .h1 {
    outline-dark se veía negro sobre negro en modo oscuro, por eso también se cambia */
 .btn-outline-light,
 .btn-outline-dark {
-  --bs-btn-color: #eae6f0;
-  --bs-btn-border-color: #8a7a9c;
+  --bs-btn-color: var(--ce-texto);
+  --bs-btn-border-color: var(--ce-gris);
   --bs-btn-bg: transparent;
-  --bs-btn-hover-color: #ff7a1a;
-  --bs-btn-hover-bg: rgba(255, 122, 26, 0.08);
-  --bs-btn-hover-border-color: #ff7a1a;
-  --bs-btn-active-color: #ff7a1a;
-  --bs-btn-active-bg: rgba(255, 122, 26, 0.15);
-  --bs-btn-active-border-color: #ff7a1a;
+  --bs-btn-hover-color: var(--ce-acento);
+  --bs-btn-hover-bg: rgb(var(--ce-acento-rgb) / 0.08);
+  --bs-btn-hover-border-color: var(--ce-acento);
+  --bs-btn-active-color: var(--ce-acento);
+  --bs-btn-active-bg: rgb(var(--ce-acento-rgb) / 0.15);
+  --bs-btn-active-border-color: var(--ce-acento);
 }
 
 /* contorno blanco cuando se navega con teclado */
 .btn:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--ce-foco);
   outline-offset: 3px;
   box-shadow: none;
 }
@@ -151,7 +172,7 @@ h1, .h1 {
   padding: 0.25rem 0 0.45rem;
   font-family: var(--fuente-titulos);
   font-size: 1.4rem;
-  color: #ff7a1a;
+  color: var(--ce-acento);
   text-decoration: none;
   background: none;
   border: 0;
@@ -169,21 +190,21 @@ h1, .h1 {
 }
 .btn-enlace:hover,
 .btn-enlace:focus-visible {
-  color: #ff9a4d;
+  color: var(--ce-acento-claro);
 }
 .btn-enlace:hover::after,
 .btn-enlace:focus-visible::after {
   width: 100%;
 }
 .btn-enlace:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--ce-foco);
   outline-offset: 4px;
 }
 .btn-enlace.secundario {
-  color: #eae6f0;
+  color: var(--ce-texto);
 }
 .btn-enlace.secundario:hover {
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 .btn-enlace.chico {
   font-size: 1.1rem;
@@ -194,8 +215,8 @@ h1, .h1 {
 /* el foco de Bootstrap es azul, lo dejamos naranjo. Si el campo tiene error el brillo sigue rojo */
 .form-control:focus,
 .form-select:focus {
-  border-color: #ff7a1a;
-  box-shadow: 0 0 0 0.2rem rgba(255, 122, 26, 0.25);
+  border-color: var(--ce-acento);
+  box-shadow: 0 0 0 0.2rem rgb(var(--ce-acento-rgb) / 0.25);
 }
 .form-control.is-invalid:focus,
 .form-select.is-invalid:focus {
@@ -204,8 +225,8 @@ h1, .h1 {
 
 /* tarjetas de Bootstrap (formularios y blogs) un poco más claras que el fondo */
 .card {
-  --bs-card-bg: #1e1626;
-  --bs-card-border-color: #3a2647;
+  --bs-card-bg: var(--ce-superficie-2);
+  --bs-card-border-color: var(--ce-borde);
 }
 
 /* ==== Home ==== */
@@ -216,7 +237,7 @@ h1, .h1 {
   display: flex;
   align-items: center;
   background:
-    linear-gradient(90deg, rgba(20, 16, 26, 0.96) 0%, rgba(20, 16, 26, 0.8) 40%, rgba(20, 16, 26, 0.15) 100%),
+    linear-gradient(90deg, rgb(var(--ce-fondo-rgb) / 0.96) 0%, rgb(var(--ce-fondo-rgb) / 0.8) 40%, rgb(var(--ce-fondo-rgb) / 0.15) 100%),
     url('/img/hero-mansion.jpg') center / cover;
 }
 .hero-home h1 {
@@ -227,7 +248,7 @@ h1, .h1 {
 .hero-home p {
   max-width: 40ch;
   font-size: 1.15rem;
-  color: #cfc7db;
+  color: var(--ce-texto-claro);
 }
 /* el texto del hero aparece suave al cargar, solo si la persona no desactivó las animaciones */
 @media (prefers-reduced-motion: no-preference) {
@@ -241,9 +262,9 @@ h1, .h1 {
 }
 
 .propiedad-mes {
-  background: #1a1322;
-  border-top: 1px solid #3a2647;
-  border-bottom: 1px solid #3a2647;
+  background: var(--ce-superficie);
+  border-top: 1px solid var(--ce-borde);
+  border-bottom: 1px solid var(--ce-borde);
 }
 .propiedad-mes img {
   width: 100%;
@@ -256,11 +277,11 @@ h1, .h1 {
 .caso-reciente {
   color: inherit;
   padding: 1rem;
-  background: #1a1322;
-  border-left: 3px solid #ff7a1a;
+  background: var(--ce-superficie);
+  border-left: 3px solid var(--ce-acento);
 }
 .caso-reciente:hover h3 {
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 .caso-reciente img {
   width: 120px;
@@ -272,7 +293,7 @@ h1, .h1 {
 
 /* "ficha" con ubicación y precio (Home y Detalle) */
 .ficha dt {
-  color: #b9aec8;
+  color: var(--ce-texto-suave);
   font-weight: normal;
   font-size: 0.9rem;
 }
@@ -284,27 +305,27 @@ h1, .h1 {
 .ficha .precio-destacado,
 .precio-destacado {
   font-size: 1.2rem;
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 
 /* ==== Catálogo y tarjetas de propiedad ==== */
 
 .cabecera-catalogo {
-  background: linear-gradient(180deg, #24122e 0%, #14101a 100%);
-  border-bottom: 1px solid #3a2647;
+  background: linear-gradient(180deg, var(--ce-morado) 0%, var(--ce-fondo) 100%);
+  border-bottom: 1px solid var(--ce-borde);
 }
 
 .tarjeta-propiedad {
   display: flex;
   flex-direction: column;
-  background: #1e1626;
-  border: 1px solid #3a2647;
+  background: var(--ce-superficie-2);
+  border: 1px solid var(--ce-borde);
   border-radius: 6px;
   overflow: hidden;
   transition: border-color 0.2s;
 }
 .tarjeta-propiedad:hover {
-  border-color: #ff7a1a;
+  border-color: var(--ce-acento);
 }
 /* overflow: hidden para que el zoom de la foto no se salga de la tarjeta */
 .tarjeta-propiedad__imagen {
@@ -328,13 +349,13 @@ h1, .h1 {
   right: 0;
   bottom: 0;
   padding: 2.5rem 0.9rem 0.6rem;
-  background: linear-gradient(transparent, rgba(20, 16, 26, 0.92));
-  color: #eae6f0;
+  background: linear-gradient(transparent, rgb(var(--ce-fondo-rgb) / 0.92));
+  color: var(--ce-texto);
   font-size: 0.9rem;
 }
 .precio-tarjeta {
   font-size: 1.5rem;
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 
 /* ==== Detalle de propiedad ==== */
@@ -368,10 +389,10 @@ h1, .h1 {
   opacity: 1;
 }
 .detalle-miniatura.activa {
-  border-color: #ff7a1a;
+  border-color: var(--ce-acento);
 }
 .detalle-miniatura:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--ce-foco);
   outline-offset: 2px;
 }
 
@@ -381,7 +402,7 @@ h1, .h1 {
 .item-carrito {
   flex-wrap: wrap;
   padding: 1rem 0;
-  border-bottom: 1px solid #3a2647;
+  border-bottom: 1px solid var(--ce-borde);
 }
 .item-carrito img {
   width: 96px;
@@ -392,11 +413,11 @@ h1, .h1 {
 .item-carrito__nombre {
   font-family: var(--fuente-titulos);
   font-size: 1.25rem;
-  color: #eae6f0;
+  color: var(--ce-texto);
   text-decoration: none;
 }
 .item-carrito__nombre:hover {
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 .item-carrito__subtotal {
   min-width: 9rem;
@@ -405,10 +426,10 @@ h1, .h1 {
 /* sticky: el resumen se queda visible al hacer scroll, dentro de su columna */
 .resumen-carrito {
   position: sticky;
-  top: 1.5rem;
+  top: calc(var(--alto-barra) + 1rem);
   padding: 1.5rem;
-  background: #1a1322;
-  border: 1px solid #3a2647;
+  background: var(--ce-superficie);
+  border: 1px solid var(--ce-borde);
   border-radius: 6px;
 }
 
@@ -418,8 +439,8 @@ h1, .h1 {
   align-items: center;
   gap: 0.1rem;
   padding: 0.1rem;
-  background: #1a1322;
-  border: 1px solid #3a2647;
+  background: var(--ce-superficie);
+  border: 1px solid var(--ce-borde);
   border-radius: 999px;
 }
 .contador__boton {
@@ -428,18 +449,18 @@ h1, .h1 {
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: #eae6f0;
+  color: var(--ce-texto);
   font-size: 0.9rem;
   line-height: 1;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
 .contador__boton:hover {
-  background: rgba(255, 122, 26, 0.15);
-  color: #ff7a1a;
+  background: rgb(var(--ce-acento-rgb) / 0.15);
+  color: var(--ce-acento);
 }
 .contador__boton:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--ce-foco);
   outline-offset: 1px;
 }
 .contador__valor {
@@ -453,7 +474,7 @@ h1, .h1 {
 .linea-tiempo {
   margin-left: 0.5rem;
   padding-left: 1.75rem;
-  border-left: 2px solid #3a2647;
+  border-left: 2px solid var(--ce-borde);
 }
 .linea-tiempo li {
   position: relative;
@@ -472,49 +493,49 @@ h1, .h1 {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #14101a;
-  border: 2px solid #ff7a1a;
+  background: var(--ce-fondo);
+  border: 2px solid var(--ce-acento);
 }
 .linea-tiempo__anio {
   display: block;
   font-size: 1.4rem;
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 .nota-proyecto {
   padding: 1.5rem;
-  background: #1a1322;
-  border-left: 3px solid #ff7a1a;
+  background: var(--ce-superficie);
+  border-left: 3px solid var(--ce-acento);
 }
 
 /* ==== Footer ==== */
 
 .pie {
-  background: #24122e;
-  border-top: 2px solid #ff7a1a;
+  background: var(--ce-morado);
+  border-top: 2px solid var(--ce-acento);
 }
 .pie__marca {
   font-family: var(--fuente-titulos);
   font-size: 1.5rem;
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 .pie__titulo {
   font-family: var(--fuente-titulos);
   font-size: 1.15rem;
-  color: #eae6f0;
+  color: var(--ce-texto);
   margin-bottom: 0.75rem;
 }
 .pie li {
   margin-bottom: 0.35rem;
 }
 .pie a {
-  color: #cfc7db;
+  color: var(--ce-texto-claro);
   text-decoration: none;
 }
 .pie a:hover {
-  color: #ff7a1a;
+  color: var(--ce-acento);
 }
 .pie hr {
-  border-color: #3a2647;
+  border-color: var(--ce-borde);
   opacity: 1;
 }
 
@@ -526,5 +547,804 @@ h1, .h1 {
   .tarjeta-propiedad__imagen img,
   .btn-enlace::after {
     transition: none;
+  }
+}
+
+/* ==== Páginas de error y Mi cuenta ==== */
+
+.pagina-error {
+  max-width: 640px;
+}
+
+.pagina-error__ilustracion {
+  width: min(220px, 60vw);
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.pagina-error__codigo {
+  font-family: var(--fuente-titulos);
+  font-size: clamp(3rem, 12vw, 5rem);
+  line-height: 1;
+  color: var(--ce-acento);
+  margin-bottom: 0.5rem;
+}
+
+.ilustracion__puerta,
+.ilustracion__muro {
+  fill: var(--ce-morado);
+  stroke: var(--ce-gris);
+  stroke-width: 2;
+}
+
+.ilustracion__panel {
+  fill: none;
+  stroke: var(--ce-borde);
+  stroke-width: 2;
+}
+
+.ilustracion__vano {
+  fill: #0b0810;
+  stroke: var(--ce-borde);
+  stroke-width: 2;
+}
+
+.ilustracion__perilla,
+.ilustracion__candado {
+  fill: var(--ce-acento);
+}
+
+.ilustracion__arco,
+.ilustracion__cadena,
+.ilustracion__mecha {
+  fill: none;
+  stroke: var(--ce-texto-suave);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ilustracion__fantasma {
+  fill: var(--ce-texto);
+  opacity: 0.85;
+}
+
+.ilustracion__ojo {
+  fill: var(--ce-fondo);
+}
+
+.ilustracion__vela {
+  fill: var(--ce-texto);
+}
+
+.ilustracion__llama {
+  fill: var(--ce-acento-claro);
+}
+
+.ilustracion__signo {
+  fill: var(--ce-texto-suave);
+  font-family: var(--fuente-titulos);
+  font-size: 34px;
+}
+
+.ficha {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--ce-superficie);
+}
+
+.ficha dt {
+  color: var(--bs-secondary-color);
+  font-weight: normal;
+}
+
+.ficha dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ==== Tienda conectada ==== */
+
+.tarjeta-propiedad.seleccionada {
+  border-color: var(--ce-acento);
+}
+
+.tarjeta-propiedad__marco {
+  position: relative;
+}
+
+.tarjeta-propiedad__etiquetas {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  right: 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.tarjeta-propiedad__etiquetas > * {
+  pointer-events: auto;
+}
+
+.tarjeta-propiedad--cargando {
+  min-height: 360px;
+}
+
+.tarjeta-propiedad--cargando .placeholder {
+  height: 220px;
+}
+
+.precio-tarjeta small,
+.precio-destacado small {
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+.estado-casa,
+.estado-boleta {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.estado-casa--disponible,
+.estado-boleta--pagada {
+  background: #16331f;
+  color: #8fe0a6;
+  border-color: #2f6b43;
+}
+
+.estado-casa--reservada {
+  background: #3a2a0c;
+  color: var(--ce-alerta);
+  border-color: #7a5a1c;
+}
+
+.estado-casa--vendida,
+.estado-casa--inactiva,
+.estado-boleta--anulada {
+  background: #2a2430;
+  color: var(--ce-texto-suave);
+  border-color: #4a3d57;
+}
+
+.nivel-embrujo span {
+  opacity: 0.2;
+  filter: grayscale(1);
+}
+
+.nivel-embrujo span.activo {
+  opacity: 1;
+  filter: none;
+}
+
+.boton-favorito {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid #4a3d57;
+  background: rgb(var(--ce-fondo-rgb) / 0.85);
+  color: var(--ce-texto);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.boton-favorito.activo {
+  color: var(--ce-favorito);
+  border-color: var(--ce-favorito);
+}
+
+.boton-favorito:focus-visible {
+  outline: 2px solid var(--ce-acento);
+  outline-offset: 2px;
+}
+
+.filtros {
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--ce-superficie);
+}
+
+.barra-comparar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--ce-morado);
+  border-top: 1px solid var(--ce-acento);
+}
+
+.tabla-comparar img {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.tabla-comparar td.mejor {
+  color: var(--ce-alerta);
+  font-weight: bold;
+}
+
+.credito-foto {
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+.mito {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.reserva-activa {
+  padding: 1rem;
+  border: 1px solid #7a5a1c;
+  border-radius: 0.5rem;
+  background: #2a1f0e;
+}
+
+.cuenta-regresiva {
+  display: block;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 1.75rem;
+  color: var(--ce-alerta);
+}
+
+.item-carrito.no-disponible {
+  opacity: 0.6;
+}
+
+.boleta {
+  background: var(--ce-superficie);
+}
+
+.menu-cuenta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--bs-border-color);
+  padding-bottom: 0.75rem;
+}
+
+.menu-cuenta__enlace {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  color: var(--bs-body-color);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.menu-cuenta__enlace.active {
+  border-color: var(--ce-acento);
+  color: var(--ce-acento);
+}
+
+@media (max-width: 575.98px) {
+  .ficha {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .ficha dd {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ==== Mapa ==== */
+
+.mapa-casas {
+  width: 100%;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--ce-superficie);
+  z-index: 0;
+}
+
+.mapa-contenedor.cargando {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.pin {
+  background: none;
+  border: none;
+}
+
+.pin .pin__punta,
+.leyenda-mapa .pin__punta {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid var(--ce-fondo);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.pin--disponible .pin__punta {
+  background: var(--ce-exito);
+}
+
+.pin--reservada .pin__punta {
+  background: var(--ce-alerta);
+}
+
+.pin--vendida .pin__punta {
+  background: var(--ce-gris);
+}
+
+.leyenda-mapa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.leyenda-mapa li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.leyenda-mapa .pin {
+  display: inline-block;
+}
+
+.leyenda-mapa .pin__punta {
+  width: 14px;
+  height: 14px;
+}
+
+.mapa-casas .leaflet-popup-content-wrapper,
+.mapa-casas .leaflet-popup-tip {
+  background: var(--ce-superficie-2);
+  color: var(--ce-texto);
+  border: 1px solid var(--ce-borde);
+}
+
+.mapa-casas .leaflet-popup-close-button {
+  color: var(--ce-texto);
+}
+
+.mapa-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 160px;
+  font-family: var(--fuente-texto);
+}
+
+.mapa-popup a {
+  color: var(--ce-acento);
+}
+
+.mapa-popup img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+
+.lista-mapa summary {
+  cursor: pointer;
+  color: var(--bs-link-color);
+}
+
+.mapa-casas--cargando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bs-secondary-color);
+}
+
+/* ==== Panel de administración ==== */
+
+.panel-menu {
+  position: sticky;
+  top: calc(var(--alto-barra) + 1rem);
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--ce-superficie);
+}
+
+.panel-menu__rol {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.3rem;
+  color: var(--ce-acento);
+}
+
+.panel-menu nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.panel-menu__enlace {
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.35rem;
+  color: var(--bs-body-color);
+  text-decoration: none;
+}
+
+.panel-menu__enlace:hover {
+  background: var(--ce-morado);
+}
+
+.panel-menu__enlace.active {
+  background: var(--ce-morado);
+  color: var(--ce-acento);
+  box-shadow: inset 3px 0 0 var(--ce-acento);
+}
+
+@media (max-width: 991.98px) {
+  .panel-menu {
+    position: static;
+  }
+
+  .panel-menu nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.indicador {
+  height: 100%;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--ce-superficie);
+}
+
+.indicador__titulo {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--bs-secondary-color);
+}
+
+.indicador__valor {
+  margin: 0.25rem 0;
+  font-family: var(--fuente-titulos);
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--ce-acento);
+}
+
+.indicador__detalle {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--bs-secondary-color);
+}
+
+.grafico {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  background: var(--ce-superficie);
+}
+
+.grafico figcaption {
+  margin-bottom: 0.75rem;
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+}
+
+.ranking {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.ranking li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.ranking li span {
+  display: inline-block;
+  width: calc(100% - 4rem);
+}
+
+.ranking li strong {
+  color: var(--ce-favorito);
+}
+
+.tabla-panel {
+  --bs-table-bg: var(--ce-superficie);
+  --bs-table-hover-bg: var(--ce-morado);
+  font-size: 0.92rem;
+}
+
+.miniatura-panel {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.fila-detalle td {
+  background: var(--ce-fondo);
+}
+
+.lista-contenido li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.cuenta-regresiva--chica {
+  display: block;
+}
+
+.cuenta-regresiva--chica .cuenta-regresiva {
+  font-size: 0.95rem;
+}
+
+.leyenda-grafico {
+  color: var(--ce-texto);
+}
+
+/* ==== Foco visible, modo linterna y sonido ==== */
+
+:focus-visible {
+  outline: 2px solid var(--ce-acento);
+  outline-offset: 2px;
+}
+
+.botones-ambiente {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.boton-ambiente {
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 1px solid var(--ce-borde);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ce-texto-suave);
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.boton-ambiente:hover {
+  color: var(--ce-texto);
+  border-color: var(--ce-texto-suave);
+}
+
+.boton-ambiente[aria-pressed="true"] {
+  color: var(--ce-fondo);
+  background: var(--ce-acento);
+  border-color: var(--ce-acento);
+  box-shadow: 0 0 12px rgb(var(--ce-acento-rgb) / 0.55);
+}
+
+.linterna {
+  position: fixed;
+  inset: 0;
+  z-index: 1090;
+  pointer-events: none;
+  background: radial-gradient(
+    circle var(--luz-radio, 230px) at var(--luz-x, 50%) var(--luz-y, 50%),
+    transparent 0,
+    transparent 45%,
+    rgb(var(--ce-fondo-rgb) / 0.75) 75%,
+    rgb(5 3 8 / 0.95) 100%
+  );
+  animation: parpadeo 6s infinite;
+}
+
+.linterna__aviso {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 1091;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--ce-borde);
+  border-radius: 999px;
+  background: rgb(var(--ce-fondo-rgb) / 0.9);
+  color: var(--ce-texto-suave);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  47% { opacity: 1; }
+  48% { opacity: 0.92; }
+  49% { opacity: 1; }
+  50% { opacity: 0.95; }
+  51% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linterna {
+    animation: none;
+  }
+}
+
+/* ==== Estilo: aurora, vidrio y brillo espectral ==== */
+
+body {
+  background:
+    radial-gradient(1100px 620px at 8% -8%, rgb(var(--ce-violeta-rgb) / 0.16), transparent 62%),
+    radial-gradient(900px 520px at 105% 105%, rgb(var(--ce-acento-rgb) / 0.08), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E"),
+    var(--ce-fondo);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgb(var(--ce-acento-rgb) / 0.35);
+  color: var(--ce-texto);
+}
+
+html {
+  scrollbar-color: var(--ce-borde) var(--ce-fondo);
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: rgb(var(--ce-morado-rgb) / 0.82) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--ce-violeta), var(--ce-acento)) 1;
+}
+
+.navbar .btn,
+.navbar-text {
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.navbar-brand {
+  text-shadow: 0 0 18px rgb(var(--ce-acento-rgb) / 0.45);
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand {
+    margin-right: 0;
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+}
+
+.pie {
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--ce-acento), var(--ce-violeta)) 1;
+}
+
+h1, .h1 {
+  background: linear-gradient(100deg, var(--ce-acento-claro) 10%, var(--ce-violeta) 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h2, .h2 {
+  color: var(--ce-texto);
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, var(--ce-borde-brillo), transparent);
+}
+
+.tarjeta-propiedad,
+.grafico,
+.indicador,
+.filtros,
+.card {
+  box-shadow: 0 10px 28px -16px rgb(0 0 0 / 0.8);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+
+.tarjeta-propiedad:hover,
+.indicador:hover {
+  transform: translateY(-4px);
+  border-color: rgb(var(--ce-acento-rgb) / 0.7);
+  box-shadow: 0 0 0 1px rgb(var(--ce-acento-rgb) / 0.25), 0 18px 36px -14px rgb(var(--ce-acento-rgb) / 0.35);
+}
+
+.btn-warning {
+  font-weight: 600;
+}
+
+.btn-outline-light {
+  --bs-btn-color: var(--ce-texto);
+  --bs-btn-border-color: var(--ce-borde-brillo);
+  --bs-btn-hover-bg: rgb(var(--ce-violeta-rgb) / 0.18);
+  --bs-btn-hover-border-color: var(--ce-violeta);
+  --bs-btn-hover-color: var(--ce-texto);
+}
+
+.hero-home {
+  position: relative;
+}
+
+.hero-home::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 55%, var(--ce-fondo) 100%),
+    radial-gradient(60% 80% at 85% 20%, rgb(var(--ce-acento-rgb) / 0.12), transparent 70%);
+}
+
+.hero-home .container {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .tarjeta-propiedad,
+  .grafico,
+  .mito {
+    animation: aparecer linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-propiedad,
+  .grafico,
+  .mito,
+  .indicador {
+    animation: none;
+    transition: none;
+  }
+
+  .tarjeta-propiedad:hover,
+  .indicador:hover {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  h1, .h1 {
+    background: none;
+    color: CanvasText;
   }
 }

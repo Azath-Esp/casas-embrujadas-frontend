@@ -1,13 +1,9 @@
-// Ayudantes para probar componentes de React dentro de Karma.
-// Como las pruebas corren en un navegador de verdad, montamos el componente en un div real del documento.
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
+import api from '../services/api';
 
-// sin esto React tira advertencias de que act() no está en un entorno de pruebas
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
-// Hace lo mismo que main.jsx (createRoot + render) pero en un div de prueba.
-// act() espera a que React termine de actualizar el DOM antes de seguir con los expect
 export function renderizar(elemento) {
   const contenedor = document.createElement('div');
   document.body.appendChild(contenedor);
@@ -17,7 +13,6 @@ export function renderizar(elemento) {
 
   return {
     contenedor,
-    // se llama en el afterEach de cada prueba, para que no queden restos que afecten a la siguiente
     desmontar() {
       act(() => root.unmount());
       contenedor.remove();
@@ -25,9 +20,6 @@ export function renderizar(elemento) {
   };
 }
 
-// Simula que el usuario escribe en un input o elige algo en un select.
-// Hacer input.value = 'algo' no sirve: React guarda el último valor que conoce y lo ignora.
-// Por eso se usa el setter nativo del navegador y después se dispara el evento que React escucha
 export function cambiarValor(elemento, valor) {
   const prototipo = Object.getPrototypeOf(elemento);
   const setterNativo = Object.getOwnPropertyDescriptor(prototipo, 'value').set;
@@ -37,4 +29,56 @@ export function cambiarValor(elemento, valor) {
     const tipoEvento = elemento.tagName === 'SELECT' ? 'change' : 'input';
     elemento.dispatchEvent(new Event(tipoEvento, { bubbles: true }));
   });
+}
+
+export async function esperar() {
+  for (let vuelta = 0; vuelta < 3; vuelta++) {
+    await act(async () => {
+      await new Promise((resolver) => setTimeout(resolver, 0));
+    });
+  }
+}
+
+export async function esperarHasta(condicion, limite = 4000) {
+  const inicio = Date.now();
+  while (!condicion()) {
+    if (Date.now() - inicio > limite) throw new Error('La condición no se cumplió a tiempo');
+    await act(async () => {
+      await new Promise((resolver) => setTimeout(resolver, 20));
+    });
+  }
+}
+
+export function crearToken(datos) {
+  const json = JSON.stringify(datos);
+  const bytes = new TextEncoder().encode(json);
+  const base64 = btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return `cabecera.${base64}.firma`;
+}
+
+export function sesionDePrueba(rol, nombre = 'Camila', minutos = 60) {
+  return {
+    token: crearToken({ sub: 'cliente@casasembrujadas.cl', id: 3, rol, exp: Math.floor(Date.now() / 1000) + minutos * 60 }),
+    nombre,
+    rol,
+    idUsuario: 3,
+    correo: 'cliente@casasembrujadas.cl',
+    exp: Math.floor(Date.now() / 1000) + minutos * 60,
+  };
+}
+
+export function simularAlmacenamiento(valores = {}) {
+  spyOn(Storage.prototype, 'getItem').and.callFake((clave) => (clave in valores ? valores[clave] : null));
+  spyOn(Storage.prototype, 'setItem');
+  spyOn(Storage.prototype, 'removeItem');
+}
+
+export function simularApi(respuestas) {
+  const responder = (metodo) => (url) => {
+    const patron = Object.keys(respuestas).find((clave) => new RegExp(clave).test(`${metodo} ${url}`));
+    if (!patron) return Promise.reject(new Error(`Sin respuesta simulada para ${metodo} ${url}`));
+    const valor = respuestas[patron];
+    return Promise.resolve({ data: typeof valor === 'function' ? valor(url) : valor, headers: {} });
+  };
+  ['get', 'post', 'put', 'delete'].forEach((metodo) => spyOn(api, metodo).and.callFake(responder(metodo.toUpperCase())));
 }

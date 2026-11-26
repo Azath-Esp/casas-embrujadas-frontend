@@ -3,61 +3,74 @@ import { MemoryRouter } from 'react-router-dom';
 import TarjetaProducto from './TarjetaProducto';
 import { renderizar } from '../test-utils/renderizar';
 
-// La tarjeta usa <Link>, y Link necesita estar dentro de un router.
-// MemoryRouter es un router "de mentira" para pruebas: no cambia la URL real del navegador
 describe('Componente TarjetaProducto', () => {
-  const producto = {
-    id: 'faro-ahogado',
-    nombre: 'Faro del Ahogado',
-    ubicacion: 'Costa de Ñuble',
-    precio: '$99.900.000',
-    imagen: '/img/faro-abandonado.jpg',
+  const casa = {
+    idProducto: 6,
+    titulo: 'Palacio Cousiño',
+    comuna: 'Santiago',
+    region: 'Metropolitana de Santiago',
+    precio: 450000000,
+    nivelEmbrujo: 4,
+    estado: 'DISPONIBLE',
+    imagenPrincipal: 'https://ejemplo.cl/cousino.jpg',
   };
   let vista;
+  const montar = (props = {}) => {
+    vista = renderizar(<MemoryRouter><TarjetaProducto casa={casa} {...props} /></MemoryRouter>);
+  };
+  const $ = (selector) => vista.contenedor.querySelector(selector);
 
   afterEach(() => vista.desmontar());
 
-  // --- DOM: que se vea lo que tiene que verse ---
-
-  it('muestra nombre, ubicación y precio del producto (DOM)', () => {
-    vista = renderizar(
-      <MemoryRouter><TarjetaProducto producto={producto} /></MemoryRouter>
-    );
+  it('muestra título, ubicación, precio, estado y nivel de embrujo', () => {
+    montar();
     const texto = vista.contenedor.textContent;
-    expect(texto).toContain('Faro del Ahogado');
-    expect(texto).toContain('Costa de Ñuble');
-    expect(texto).toContain('$99.900.000');
+    expect(texto).toContain('Palacio Cousiño');
+    expect(texto).toContain('Santiago, Metropolitana de Santiago');
+    expect(texto).toContain('$450.000.000');
+    expect(texto).toContain('Disponible');
+    expect($('[aria-label="Nivel de embrujo 4 de 5"]')).not.toBeNull();
   });
 
-  it('el enlace "Ver detalle" apunta a la ruta del producto', () => {
-    vista = renderizar(
-      <MemoryRouter><TarjetaProducto producto={producto} /></MemoryRouter>
-    );
-    const enlace = vista.contenedor.querySelector('a');
-    expect(enlace.getAttribute('href')).toBe('/producto/faro-ahogado');
+  it('el enlace apunta al detalle con el id numérico', () => {
+    montar();
+    expect($('a').getAttribute('href')).toBe('/producto/6');
   });
 
-  it('no muestra el botón "Añadir" si no recibe onAgregar', () => {
-    vista = renderizar(
-      <MemoryRouter><TarjetaProducto producto={producto} /></MemoryRouter>
-    );
-    expect(vista.contenedor.querySelector('button')).toBeNull();
+  it('sin acciones no dibuja botones', () => {
+    montar();
+    expect($('button')).toBeNull();
+    expect($('input[type="checkbox"]')).toBeNull();
   });
 
-  // --- comportamiento, con mock ---
+  it('llama a onAgregar con el id y se desactiva si ya está en el carrito', () => {
+    const onAgregar = jasmine.createSpy('onAgregar');
+    montar({ onAgregar });
+    act(() => $('.btn-warning').click());
+    expect(onAgregar).toHaveBeenCalledWith(6);
 
-  it('llama a onAgregar con el id al hacer clic (mock con createSpy)', () => {
-    // createSpy crea una función falsa que no hace nada pero anota cómo la llamaron.
-    // Así probamos la tarjeta sola, sin depender del carrito de verdad
-    const onAgregarFalso = jasmine.createSpy('onAgregar');
+    vista.desmontar();
+    montar({ onAgregar, enCarrito: true });
+    expect($('.btn-warning').disabled).toBeTrue();
+    expect($('.btn-warning').textContent).toContain('En el carrito');
+  });
+
+  it('no ofrece el carrito si la casa no está disponible', () => {
     vista = renderizar(
-      <MemoryRouter><TarjetaProducto producto={producto} onAgregar={onAgregarFalso} /></MemoryRouter>
+      <MemoryRouter><TarjetaProducto casa={{ ...casa, estado: 'VENDIDA' }} onAgregar={() => {}} /></MemoryRouter>
     );
+    expect($('.btn-warning')).toBeNull();
+    expect(vista.contenedor.textContent).toContain('Vendida');
+  });
 
-    const boton = vista.contenedor.querySelector('button');
-    act(() => boton.click());
-
-    expect(onAgregarFalso).toHaveBeenCalledTimes(1);
-    expect(onAgregarFalso).toHaveBeenCalledWith('faro-ahogado');
+  it('el corazón y la casilla de comparar avisan con el id', () => {
+    const onFavorito = jasmine.createSpy('onFavorito');
+    const onComparar = jasmine.createSpy('onComparar');
+    montar({ onFavorito, onComparar, esFavorito: true });
+    expect($('.boton-favorito').getAttribute('aria-pressed')).toBe('true');
+    act(() => $('.boton-favorito').click());
+    act(() => $('input[type="checkbox"]').click());
+    expect(onFavorito).toHaveBeenCalledWith(6);
+    expect(onComparar).toHaveBeenCalledWith(6);
   });
 });

@@ -11,10 +11,16 @@
     "test": "karma start karma.conf.cjs"
   },
   "dependencies": {
+    "@fontsource-variable/cinzel": "^5.3.0",
+    "@fontsource-variable/crimson-pro": "^5.3.0",
+    "axios": "^1.21.1",
     "bootstrap": "^5.3.8",
+    "leaflet": "^1.9.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.4"
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.18.4",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@babel/core": "^8.0.7",

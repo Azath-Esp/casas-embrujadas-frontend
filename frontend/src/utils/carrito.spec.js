@@ -1,86 +1,42 @@
-import {
-  parsePrecio, formatPrecio, agregarAlCarrito, quitarDelCarrito, calcularTotal, agruparCarrito,
-} from './carrito';
+import { agregarAlCarrito, calcularResumen, normalizarCarrito, quitarDelCarrito, sePuedeComprar } from './carrito';
 
-// Pruebas de lógica: no se monta ningún componente, solo se llama a las funciones.
-// Usamos un catálogo chico con precios redondos para que los totales sean fáciles de revisar
-describe('Utilidades del carrito', () => {
-  const productos = [
-    { id: 'mansion', precio: '$100.000' },
-    { id: 'cabana', precio: '$50.000' },
-  ];
-
-  // --- precios ---
-
-  it('parsePrecio convierte texto con $ y puntos a número', () => {
-    expect(parsePrecio('$185.000.000')).toBe(185000000);
+describe('Funciones del carrito', () => {
+  it('normalizarCarrito deja solo ids enteros positivos y sin repetir', () => {
+    expect(normalizarCarrito([3, 3, 'faro-ahogado', 1.5, -2, 7])).toEqual([3, 7]);
+    expect(normalizarCarrito(null)).toEqual([]);
+    expect(normalizarCarrito({ id: 1 })).toEqual([]);
   });
 
-  it('parsePrecio devuelve 0 si el texto no tiene números', () => {
-    expect(parsePrecio('gratis')).toBe(0);
+  it('agregarAlCarrito agrega una casa sin modificar el original', () => {
+    const original = [1];
+    const nuevo = agregarAlCarrito(original, 6);
+    expect(nuevo).toEqual([1, 6]);
+    expect(original).toEqual([1]);
   });
 
-  it('formatPrecio da formato chileno con $', () => {
-    expect(formatPrecio(62500000)).toBe('$62.500.000');
+  it('agregarAlCarrito no repite una casa ni acepta ids inválidos', () => {
+    const carrito = [1, 6];
+    expect(agregarAlCarrito(carrito, 6)).toBe(carrito);
+    expect(agregarAlCarrito(carrito, 'faro')).toBe(carrito);
   });
 
-  // --- agregar ---
-
-  it('agregarAlCarrito agrega la cantidad indicada sin modificar el original', () => {
-    const original = ['cabana'];
-    const nuevo = agregarAlCarrito(original, 'mansion', 2);
-    expect(nuevo).toEqual(['cabana', 'mansion', 'mansion']);
-    expect(original).toEqual(['cabana']); // el original tiene que quedar igual (inmutabilidad)
+  it('quitarDelCarrito saca la casa y no cambia nada si no está', () => {
+    expect(quitarDelCarrito([1, 6, 9], 6)).toEqual([1, 9]);
+    const carrito = [1];
+    expect(quitarDelCarrito(carrito, 99)).toBe(carrito);
   });
 
-  it('agregarAlCarrito usa cantidad 1 por defecto', () => {
-    expect(agregarAlCarrito([], 'faro')).toEqual(['faro']);
+  it('calcularResumen calcula neto, IVA redondeado al peso y total como el backend', () => {
+    expect(calcularResumen([{ precio: 999 }])).toEqual({ neto: 999, iva: 190, total: 1189 });
+    expect(calcularResumen([{ precio: '100000000' }, { precio: 50 }])).toEqual({ neto: 100000050, iva: 19000010, total: 119000060 });
+    expect(calcularResumen([])).toEqual({ neto: 0, iva: 0, total: 0 });
   });
 
-  // estos dos casos cubren las dos partes del if (!id || cantidad < 1).
-  // toBe compara que sea el MISMO arreglo, o sea que no se creó uno nuevo
-  it('agregarAlCarrito no agrega nada si no hay id', () => {
-    const carrito = ['cabana'];
-    expect(agregarAlCarrito(carrito, '', 1)).toBe(carrito);
-  });
-
-  it('agregarAlCarrito no agrega nada si la cantidad es menor a 1', () => {
-    const carrito = ['cabana'];
-    expect(agregarAlCarrito(carrito, 'mansion', 0)).toBe(carrito);
-  });
-
-  // --- quitar ---
-
-  it('quitarDelCarrito quita solo una unidad', () => {
-    expect(quitarDelCarrito(['mansion', 'mansion'], 'mansion')).toEqual(['mansion']);
-  });
-
-  it('quitarDelCarrito no cambia nada si el id no está', () => {
-    const carrito = ['cabana'];
-    expect(quitarDelCarrito(carrito, 'faro')).toBe(carrito);
-  });
-
-  // --- total ---
-
-  it('calcularTotal suma los precios de los productos del carrito', () => {
-    // 100.000 + 50.000 + 50.000
-    expect(calcularTotal(['mansion', 'cabana', 'cabana'], productos)).toBe(200000);
-  });
-
-  it('calcularTotal ignora ids que no existen en el catálogo', () => {
-    expect(calcularTotal(['mansion', 'no-existe'], productos)).toBe(100000);
-  });
-
-  // --- agrupar (página del carrito) ---
-
-  it('agruparCarrito junta ids repetidos con su cantidad y subtotal', () => {
-    const items = agruparCarrito(['mansion', 'cabana', 'mansion'], productos);
-    expect(items.length).toBe(2);
-    expect(items[0].cantidad).toBe(2);
-    expect(items[0].subtotal).toBe(200000);
-  });
-
-  it('agruparCarrito ignora ids que no existen', () => {
-    expect(agruparCarrito(['no-existe'], productos)).toEqual([]);
+  it('sePuedeComprar acepta disponibles y reservadas por el mismo cliente', () => {
+    const reservas = [{ idProducto: 6, estado: 'ACTIVA' }];
+    expect(sePuedeComprar({ idProducto: 1, estado: 'DISPONIBLE' })).toBeTrue();
+    expect(sePuedeComprar({ idProducto: 6, estado: 'RESERVADA' }, reservas)).toBeTrue();
+    expect(sePuedeComprar({ idProducto: 7, estado: 'RESERVADA' }, reservas)).toBeFalse();
+    expect(sePuedeComprar({ idProducto: 8, estado: 'VENDIDA' }, reservas)).toBeFalse();
   });
 });
